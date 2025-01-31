@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        #parent{
+           display: grid;
+           align-items: center;
+           justify-content: center;
+           height: 100vh;
+        }
+        #child{
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            gap: 5px;
+            margin: 0;
+            padding: 0;
+        }
+        h1{
+            line-height: 1;
+            margin: 0;
+            text-align: center;
+        }
+       
+        .box1{
+            width: 100px;              /* Fixed width */
+            height: 100px;             /* Fixed height */
+            border: 2px solid black;   /* Border for visibility */
+            display: flex;             /* Center content */
+            align-items: center;       /* Vertically center text */
+            justify-content: center;   /* Horizontally center text */
+            font-size: 24px;           /* Text size */
+            cursor: pointer;           /* Pointer on hover */
+            background-color: lightgray; /* Background color */
+            border-radius: 5px;        /* Rounded corners */
+            box-sizing: border-box;    /* Ensure padding doesn't affect size */
+            overflow: hidden; 
+            
+        }
+    </style>
+</head>
+<body>
+    <div id="parent">
+        <h1>TIC-TAC-TOE</h1>
+        <div id="child">
+            <div class="box1" onclick="XO(event)"></div>
+            <div class="box1" onclick="XO(event)"></div>
+            <div class="box1" onclick="XO(event)"></div>
+            <div class="box1" onclick="XO(event)"></div>
+            <div class="box1" onclick="XO(event)"></div>
+            <div class="box1" onclick="XO(event)"></div>
+            <div class="box1" onclick="XO(event)"></div>
+            <div class="box1" onclick="XO(event)"></div>
+            <div class="box1" onclick="XO(event)"></div>
+        </div>
+    </div>
+    <script>
+        let currentPlayer = "X";
+        const boardState = ["","","","","","","","",""] // Array(9).fill(""); -> Track the state of the board
+        const winningCombinations = [
+            [0, 1, 2], // Top row
+            [3, 4, 5], // Middle row
+            [6, 7, 8], // Bottom row
+            [0, 3, 6], // Left column
+            [1, 4, 7], // Middle column
+            [2, 5, 8], // Right column
+            [0, 4, 8], // Left-to-right diagonal
+            [2, 4, 6]  // Right-to-left diagonal
+        ];
+
+        function XO(eve) {
+            const box = eve.target;
+            const boxIndex = Array.from(box.parentElement.children).indexOf(box);
+
+            if (!boardState[boxIndex]) { // If the box is empty
+                boardState[boxIndex] = currentPlayer;
+                box.textContent = currentPlayer;
+
+                if (checkWinner(currentPlayer)) {
+                    alert(`${currentPlayer} wins!`);
+                    resetGame();
+                } else if (boardState.every(cell => cell !== "")) {
+                    alert("It's a draw!");
+                    resetGame();
+                } else {
+                    currentPlayer = currentPlayer === "X" ? "O" : "X"; // Switch player
+                }
+            }
+        }
+
+        function checkWinner(player) {
+            return winningCombinations.some(combination => 
+                combination.every(index => boardState[index] === player)
+            );
+        }
+
+        function resetGame() {
+            boardState.fill("");
+            currentPlayer = "X";
+            document.querySelectorAll(".box1").forEach(box => (box.textContent = ""));
+        }
+    </script>
+</body>
+</html>
